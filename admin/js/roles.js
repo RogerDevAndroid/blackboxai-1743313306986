@@ -1,4 +1,4 @@
-// Document list from the system
+// Document list from the system with Google Docs/Sheets links
 const systemDocuments = [
     { id: 'abril2025', name: 'ABRIL 2025_.xlsx', type: 'excel', url: 'https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID' },
     { id: 'fichaClinica', name: 'Actualizada Ficha Clínica y de Diagnóstico de faciales dermacielo.docx', type: 'document', url: 'https://docs.google.com/document/d/YOUR_DOC_ID' },
@@ -65,6 +65,14 @@ function hideModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('hidden');
+    }
+}
+
+// Open document in Google Docs/Sheets
+function openDocument(docId) {
+    const doc = systemDocuments.find(d => d.id === docId);
+    if (doc && doc.url) {
+        window.open(doc.url, '_blank');
     }
 }
 
@@ -150,10 +158,11 @@ function renderRolesTable() {
                         .map(([docId, _]) => {
                             const doc = systemDocuments.find(d => d.id === docId);
                             return doc ? `
-                                <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                <button onclick="openDocument('${docId}')" 
+                                        class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200">
                                     <i class="fas fa-${doc.type === 'excel' ? 'file-excel text-green-600' : 'file-word text-blue-600'} mr-1"></i>
                                     ${doc.name.length > 20 ? doc.name.substring(0, 20) + '...' : doc.name}
-                                </span>
+                                </button>
                             ` : '';
                         }).join('')}
                 </div>
