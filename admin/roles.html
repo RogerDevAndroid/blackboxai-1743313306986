@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dermacielo - Gestión de Roles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+    <script>
+        // Modal Management
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('hidden');
+                // Add event listener to close modal when clicking outside
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        hideModal(modalId);
+                    }
+                });
+            }
+        }
+
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // Permission Management
+        function toggleModuleAccess(moduleId, checked) {
+            const permissionInputs = document.querySelectorAll(`#${moduleId} input[type="checkbox"]`);
+            permissionInputs.forEach(input => {
+                if (input !== event.target) {
+                    input.disabled = !checked;
+                    if (!checked) {
+                        input.checked = false;
+                    }
+                }
+            });
+        }
+
+        // Form Submission
+        function handleRoleSubmit(event) {
+            event.preventDefault();
+            
+            // Collect form data
+            const formData = {
+                name: document.getElementById('roleName').value,
+                description: document.getElementById('roleDescription').value,
+                permissions: {}
+            };
+
+            // Collect permissions
+            const modules = ['dashboard', 'users', 'appointments', 'patients', 'sales', 'inventory'];
+            modules.forEach(module => {
+                const moduleAccess = document.querySelector(`#${module}Module input[name="${module}Access"]`);
+                if (moduleAccess && moduleAccess.checked) {
+                    formData.permissions[module] = {
+                        access: true,
+                        create: document.querySelector(`#${module}Module input[name="${module}Create"]`)?.checked || false,
+                        edit: document.querySelector(`#${module}Module input[name="${module}Edit"]`)?.checked || false,
+                        delete: document.querySelector(`#${module}Module input[name="${module}Delete"]`)?.checked || false,
+                        view: document.querySelector(`#${module}Module input[name="${module}View"]`)?.checked || false
+                    };
+                }
+            });
+
+            console.log('Role Data:', formData);
+            hideModal('createRoleModal');
+        }
+
+        // Initialize event listeners when the document loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add form submit handler
+            const roleForm = document.getElementById('roleForm');
+            if (roleForm) {
+                roleForm.addEventListener('submit', handleRoleSubmit);
+            }
+
+            // Add module access toggle handlers
+            const moduleToggles = document.querySelectorAll('.module-access-toggle');
+            moduleToggles.forEach(toggle => {
+                toggle.addEventListener('change', (e) => {
+                    const moduleId = e.target.getAttribute('data-module');
+                    toggleModuleAccess(moduleId, e.target.checked);
+                });
+            });
+        });
+    </script>
+</head>
+[Previous HTML content from line 14 onwards remains unchanged]
